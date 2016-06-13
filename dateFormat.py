@@ -1,25 +1,23 @@
 #! python3
-# dateFormat: Finds all file names in a folder, revises American-style dates to European-style dates
+# dateFormat: Finds all file names in current working directory, revises American-style dates (MM-DD-YYYY) to European-style (DD-MM-YYYY)
 
 import os, re, shutil
 
 # Create a regex that can identify the text pattern of American-style dates.
 
-dateRegex = re.compile(r'''
-			(0[1-9]|1[0-2])                  # Month 
-			-
-			(10|20|[0-2][1-9]|3[01])         # Day - instead of [0-2][0-9]|3[01] to avoid 00 as a match
-			-
-			((198[0-9]|20(0[0-9]|1[0-6])'''  # Year - matches 1980 - 2016
-			, re.VERBOSE)
+dateRegex = re.compile(r'''(\d{2})	# Month
+			   -
+			   (\d{2})	# Day
+			   -
+			   (\d{4})'''	# Year
+			   , re.VERBOSE)
 
+# Loop over each filename in current working directory, using the regex to check whether it has a American date 
+# and rename with Shutil.move():
 
-# Call os.listdir() to find all the files in the working directory.
+for filename in os.listdir(os.getcwd()):
+	if dateRegex.search(filename) != None:
+		shutil.move(filename, dateRegex.sub('\2-\1-\3', filename))
+		
 
-os.listdir(os.getcwd())
-
-
-# Loop over each filename, using the regex to check whether it has a date.
-
-# If it has a date, rename the file with shutil.move().
 
