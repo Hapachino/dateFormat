@@ -1,25 +1,60 @@
 #! python3
-# dateFormat: Finds all file names in a folder, revises American-style dates to European-style dates
+# dateFormat: Finds all file names in cwd, revises American-style dates (MM-DD-YYYY) to European-style (DD-MM-YYYY)
 
 import os, re, shutil
 
-# Create a regex that can identify the text pattern of American-style dates.
+# regex that can identify the text pattern of American-style dates.
 
 dateRegex = re.compile(r'''
-			(0[1-9]|1[0-2])                  # Month 
+			^(.*?)?		# Text Before
+			((0|1)\d)	# Month
+			-		
+			((0|1|2|3)\d)	# Day
 			-
-			(10|20|[0-2][1-9]|3[01])         # Day - instead of [0-2][0-9]|3[01] to avoid 00 as a match
+			((19|20)\d\d)	# Year
+			(.*?)?$		# Text After
+			''', re.VERBOSE)
+
+''' 
+Numeric representation of the mo.groups:
+
+			^(1)?		# Text Before
+			(2(3))		# Month
+			-		
+			(4(5))		# Day
 			-
-			((198[0-9]|20(0[0-9]|1[0-6])'''  # Year - matches 1980 - 2016
-			, re.VERBOSE)
+			(6(7))		# Year
+			(8)?$		# Text After
+'''
+
+# Loop over each filename in current working directory, using the regex to check whether it has an American date 
+
+for filename in os.listdir('.'):
+	mo = dateRegex.search(filename)
+	if mo == None
+		continue
+
+# if match found, create variales of the mo.groups:
+
+	textBefore = mo.group(1)
+	month = mo.group(2)
+	day = mo.group(4)
+	year = mo.group(6)
+	textAfter = mo.group(8)
+	
+# create European style filename using mo.group variables
+	
+	europeanFile = textBefore + month + '-' + day + '-' + year + textAfter
+
+# find the American and Euroepan absolute filepaths and rename with shutil.move(): comment out and use print first!
+
+	cwd = os.path.abspath('.')
+	europeanPath = os.path.join(cwd, europeanFile)
+	americanPath = os.path.join(cdw, filename)
+	# shutil.move(americanPath, europeanPath) 	# uncomment after testing
+	print('Renaming "%s" to "%s"...' % (americanPath, europeanPath))
+	
 
 
-# Call os.listdir() to find all the files in the working directory.
 
-os.listdir(os.getcwd())
-
-
-# Loop over each filename, using the regex to check whether it has a date.
-
-# If it has a date, rename the file with shutil.move().
 
